@@ -7,6 +7,8 @@ from pathlib import Path
 from discord import Message
 from commands.command import Command
 from commands.turnos import Turnos
+from commands.help import Help
+from commands.rolls import Roll
 
 PATH = Path(__file__).parent
 
@@ -22,8 +24,10 @@ class Client(discord.Client):
         for prefix, command in self.commands.items():
             if message.content.startswith(prefix):
                 await command.run(message)
-            elif message.content.startswith(';'):
-                await message.channel.send('Desculpa, mas esse comando não existe!')
+                return
+            
+        if message.content.startswith(';'):
+            await message.channel.send('Desculpa, mas esse comando não existe!')
     
     def add_command(self, command: Command):
         self.commands[command.prefix] = command
@@ -35,6 +39,9 @@ intents.message_content = True
 dotenv.load_dotenv(PATH / '.env')
 
 client = Client(intents=intents)
-client.add_command(Turnos('Turnos', ';turnos', ';turnos <@ de quem vai participar>', 'Gera uma mensagem contendo os turnos do rpg.'))
-client.run(os.getenv('TOKEN'))
 
+client.add_command(Turnos('Turnos', ';turnos', ';turnos <@ de quem vai participar>', 'Gera uma mensagem contendo os turnos do rpg.'))
+client.add_command(Help('Ajuda', ';help', ';help', 'Comando de ajuda do bot, mostra toda a documentação e como utilizar', client.commands.values()))
+client.add_command(Roll('Roll', ';roll', ';roll <dado(opcional)> <modificador(opcional)>', 'Rola um, ou vários dados para você, e mostra o resultado, sendo o principal comando do RPG'))
+
+client.run(os.getenv('TOKEN'))
