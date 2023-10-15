@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 from discord import Message
 from commands.command import Command
-from commands.teste import Teste
+from commands.turnos import Turnos
 
 PATH = Path(__file__).parent
 
@@ -25,7 +25,7 @@ class Client(discord.Client):
             elif message.content.startswith(';'):
                 await message.channel.send('Desculpa, mas esse comando não existe!')
     
-    def add_comand(self, command: Command):
+    def add_command(self, command: Command):
         self.commands[command.prefix] = command
         
     
@@ -35,5 +35,6 @@ intents.message_content = True
 dotenv.load_dotenv(PATH / '.env')
 
 client = Client(intents=intents)
-client.add_comand(Teste('Comando Teste', ';teste', ';teste', 'Primeiro comando, é só um teste'))
+client.add_command(Turnos('Turnos', ';turnos', ';turnos <@ de quem vai participar>', 'Gera uma mensagem contendo os turnos do rpg.'))
 client.run(os.getenv('TOKEN'))
+
