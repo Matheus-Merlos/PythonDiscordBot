@@ -9,6 +9,8 @@ from commands.command import Command
 from commands.turnos import Turnos
 from commands.help import Help
 from commands.rolls import Roll
+from commands.itemtypes import *
+from commands.items import *
 
 PATH = Path(__file__).parent
 
@@ -43,5 +45,11 @@ client = Client(intents=intents)
 client.add_command(Turnos('Turnos', ';turnos', ';turnos <@ de quem vai participar>', 'Gera uma mensagem contendo os turnos do rpg.'))
 client.add_command(Help('Ajuda', ';help', ';help', 'Comando de ajuda do bot, mostra toda a documentação e como utilizar', client.commands.values()))
 client.add_command(Roll('Roll', ';roll', ';roll <dado(opcional)> <modificador(opcional)>', 'Rola um, ou vários dados para você, e mostra o resultado, sendo o principal comando do RPG'))
+
+client.add_command(AddItemType('AddItemType', ';additemtype', ';additemtype <Nome>', 'Comando para adicionar novos tipos de item, requer permissão de "administrador"'))
+client.add_command(ItemTypes('ItemTypes', ';itemtypes', ';itemtypes', 'Mostra os tipos de itens que foram registrados'))
+
+client.add_command(AddItem('AddItem', ';additem', ';additem <nome do item> <preço> <tipo> <durabilidade> <descrição>', 'Cria um novo item para ser usado, o tipo do item pode ser especificado tanto em nome, quanto em ID, para mais informações sobre isso apenas digite ";itemtypes"'))
+
 
 client.run(os.getenv('TOKEN'))
