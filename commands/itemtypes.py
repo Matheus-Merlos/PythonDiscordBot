@@ -14,10 +14,7 @@ class AddItemType(Command):
         content = tuple([item_type_name])
         
         comm = Comitter(botutils.DB_PATH)
-        comm.set_data_insertion_query("""
-                                      INSERT INTO itemtypes (description)
-                                      VALUES (?);
-                                      """)
+        comm.set_data_insertion_query("INSERT INTO itemtypes (description) VALUES (?);")
         comm.commit(content)
         
         await msg.reply('Tipo de item adicionado com sucesso!')
@@ -25,9 +22,7 @@ class AddItemType(Command):
 class ItemTypes(Command):
     async def run(self, msg: Message):
         comm = Comitter(botutils.DB_PATH)
-        comm.set_data_pull_query("""
-                                 SELECT (description) FROM itemtypes;
-                                 """)
+        comm.set_data_pull_query("SELECT (description) FROM itemtypes;")
         
         itemtypes = comm.pull()
         

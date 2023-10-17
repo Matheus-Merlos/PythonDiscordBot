@@ -1,14 +1,22 @@
 from commands.command import Command
 from discord import Message
 from dbhelper import *
-from commands.itemtypes import ItemTypes
 import botutils
 from unidecode import unidecode
 
 class AddItem(Command):
     async def run(self, msg: Message):
         msg_as_list = msg.content.split()
-        item_name = unidecode(self.get_item_name(msg_as_list)).capitalize()
+        
+        #Pega o nome do item e checa se ele já existe na base de dados
+        item_name = unidecode(self.get_item_name(msg_as_list)).capitalize().strip()
+        puller_2 = Comitter(botutils.DB_PATH)
+        puller_2.set_data_pull_query("SELECT id FROM item WHERE nome = ?")
+        exists = puller_2.pull((item_name,))
+        if exists:
+            await msg.reply(f'O item "{item_name}" já existe.')
+            return
+        
         item_price, index = self.get_item_price(msg_as_list)
         try:
             item_type, index2 = self.get_item_type(msg_as_list, index)
@@ -22,13 +30,6 @@ class AddItem(Command):
         
         item_durability = self.get_item_durability(msg_as_list, index2)
         item_description = self.get_item_description(msg_as_list, index2 + 1)
-        
-        puller_2 = Comitter(botutils.DB_PATH)
-        puller_2.set_data_pull_query("SELECT id FROM item WHERE nome = ?")
-        exists = puller_2.pull((item_name,))
-        if exists:
-            await msg.reply(f'O item "{item_name}" já existe.')
-            return
         
         #Cria a tupla contendo os dados do item
         item = (item_name, type_id, item_description, item_price, item_durability)

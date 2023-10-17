@@ -10,7 +10,8 @@ from commands.turnos import Turnos
 from commands.help import Help
 from commands.rolls import Roll
 from commands.itemtypes import *
-from commands.items import *
+from commands.additem import *
+from commands.item import Item
 
 PATH = Path(__file__).parent
 
@@ -50,6 +51,7 @@ client.add_command(AddItemType('AddItemType', ';additemtype', ';additemtype <Nom
 client.add_command(ItemTypes('ItemTypes', ';itemtypes', ';itemtypes', 'Mostra os tipos de itens que foram registrados'))
 
 client.add_command(AddItem('AddItem', ';additem', ';additem <nome do item> <preço> <tipo> <durabilidade> <descrição>', 'Cria um novo item para ser usado, o tipo do item pode ser especificado tanto em nome, quanto em ID, para mais informações sobre isso apenas digite ";itemtypes"'))
+client.add_command(Item('Item', ';item', ';item <nome_do_item>', 'Ver os detalhes de um item, como nome, preço, durabilidade, tipo e descrição'))
 
 
 client.run(os.getenv('TOKEN'))
