@@ -3,17 +3,41 @@ from discord import Message
 from dbhelper import *
 from commands.itemtypes import ItemTypes
 import botutils
+from unidecode import unidecode
 
 class AddItem(Command):
     async def run(self, msg: Message):
         msg_as_list = msg.content.split()
-        item_name = self.get_item_name(msg_as_list)
+        item_name = unidecode(self.get_item_name(msg_as_list)).capitalize()
         item_price, index = self.get_item_price(msg_as_list)
-        item_type, index2 = self.get_item_type(msg_as_list, index)
+        try:
+            item_type, index2 = self.get_item_type(msg_as_list, index)
+        except ItemTypeNotFoundError:
+            await msg.reply(f'Não existe um tipo de item com esse nome/id.')
+            return
+        
+        puller = Comitter(botutils.DB_PATH)
+        puller.set_data_pull_query("SELECT id FROM itemtypes WHERE description = ?")
+        type_id = puller.pull((item_type,))[0][0]
+        
         item_durability = self.get_item_durability(msg_as_list, index2)
         item_description = self.get_item_description(msg_as_list, index2 + 1)
-        print(item_name, item_price, item_type, item_durability, item_description)
         
+        puller_2 = Comitter(botutils.DB_PATH)
+        puller_2.set_data_pull_query("SELECT id FROM item WHERE nome = ?")
+        exists = puller_2.pull((item_name,))
+        if exists:
+            await msg.reply(f'O item "{item_name}" já existe.')
+            return
+        
+        #Cria a tupla contendo os dados do item
+        item = (item_name, type_id, item_description, item_price, item_durability)
+        #Insere os dados
+        comm = Comitter(botutils.DB_PATH)
+        comm.set_data_insertion_query("INSERT INTO item (nome, id_type, description, price, durability) VALUES (?, ?, ?, ?, ?)")
+        comm.commit(item)
+        
+        await msg.reply('Item criado com sucesso!')
         
     
     #Pega o nome do item, através de pegar todas as primeiras palavras, dando um break quando ele chega no preço
@@ -101,3 +125,5 @@ class AddItem(Command):
 
 
 class ItemTypeNotFoundError(Exception): ...
+
+class ItemExistsError(Exception): ...
