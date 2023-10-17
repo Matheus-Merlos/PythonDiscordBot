@@ -83,11 +83,11 @@ class Comitter:
         cursor.close()
         connection.close()
         
-    def pull(self):
+    def pull(self, args=()):
         connection = sqlite3.connect(self.database_path)
         cursor = connection.cursor()
         
-        cursor.execute(self.pull_query)
+        cursor.execute(self.pull_query, args)
         
         content = cursor.fetchall()
         
