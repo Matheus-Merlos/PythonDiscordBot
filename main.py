@@ -12,6 +12,7 @@ from commands.rolls import Roll
 from commands.items.itemtypes import *
 from commands.items.additem import *
 from commands.items.item import Item
+from commands.shop.shop import Shop
 
 PATH = Path(__file__).parent
 
@@ -52,6 +53,8 @@ client.add_command(ItemTypes('ItemTypes', ';itemtypes', ';itemtypes', 'Mostra os
 
 client.add_command(AddItem('AddItem', ';additem', ';additem <nome do item> <preço> <tipo> <durabilidade> <descrição>', 'Cria um novo item para ser usado, o tipo do item pode ser especificado tanto em nome, quanto em ID, para mais informações sobre isso apenas digite ";itemtypes"'))
 client.add_command(Item('Item', ';item', ';item <nome do item>', 'Ver os detalhes de um item, como nome, preço, durabilidade, tipo e descrição'))
+
+client.add_command(Shop('Shop', ';shop', ';shop <tipo de item(opcional)>', 'Mostra todos os itens criados e seus respectivos preços', client))
 
 
 client.run(os.getenv('TOKEN'))
