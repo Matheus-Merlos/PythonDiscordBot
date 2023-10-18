@@ -6,6 +6,10 @@ import botutils
 
 class AddItemType(Command):
     async def run(self, msg: Message):
+        if not msg.author.guild_permissions.administrator:
+            await msg.reply('Você não possui permissões de `administrador` para executar este comando.')
+            return
+            
         msg_as_list = msg.content.split()
         del msg_as_list[0]
         
