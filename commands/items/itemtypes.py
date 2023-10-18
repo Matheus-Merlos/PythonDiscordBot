@@ -3,6 +3,7 @@ from discord import Message
 from dbhelper import Comitter
 import discord
 import botutils
+from unidecode import unidecode
 
 class AddItemType(Command):
     async def run(self, msg: Message):
@@ -19,7 +20,7 @@ class AddItemType(Command):
         
         comm = Comitter(botutils.DB_PATH)
         comm.set_data_insertion_query("INSERT INTO itemtypes (description) VALUES (?);")
-        comm.commit(content)
+        comm.commit(unidecode(content))
         
         await msg.reply('Tipo de item adicionado com sucesso!')
 

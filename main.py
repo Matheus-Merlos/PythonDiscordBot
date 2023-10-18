@@ -13,6 +13,7 @@ from commands.items.itemtypes import *
 from commands.items.additem import *
 from commands.items.item import Item
 from commands.shop.shop import Shop
+from commands.items.edititem import EditItem
 
 PATH = Path(__file__).parent
 
@@ -48,11 +49,14 @@ client.add_command(Turnos('Turnos', ';turnos', ';turnos <@ de quem vai participa
 client.add_command(Help('Ajuda', ';help', ';help', 'Comando de ajuda do bot, mostra toda a documentação e como utilizar', client.commands.values()))
 client.add_command(Roll('Roll', ';roll', ';roll <dado(opcional)> <modificador(opcional)>', 'Rola um, ou vários dados para você, e mostra o resultado, sendo o principal comando do RPG'))
 
-client.add_command(AddItemType('AddItemType', ';additemtype', ';additemtype <Nome>', 'Comando para adicionar novos tipos de item, requer permissão de "administrador"'))
-client.add_command(ItemTypes('ItemTypes', ';itemtypes', ';itemtypes', 'Mostra os tipos de itens que foram registrados'))
+client.add_command(AddItemType('Adicionar Tipo de Item', ';additemtype', ';additemtype <Nome>', 'Comando para adicionar novos tipos de item, requer permissão de "administrador"'))
+client.add_command(ItemTypes('Tipos de Item', ';itemtypes', ';itemtypes', 'Mostra os tipos de itens que foram registrados'))
 
-client.add_command(AddItem('AddItem', ';additem', ';additem <nome do item> <preço> <tipo> <durabilidade> <descrição>', 'Cria um novo item para ser usado, o tipo do item pode ser especificado tanto em nome, quanto em ID, para mais informações sobre isso apenas digite ";itemtypes"'))
+client.add_command(AddItem('Adicionar Item', ';additem', ';additem <nome do item> <preço> <tipo> <durabilidade> <descrição>', 'Cria um novo item para ser usado, o tipo do item pode ser especificado tanto em nome, quanto em ID, para mais informações sobre isso apenas digite ";itemtypes"'))
 client.add_command(Item('Item', ';item', ';item <nome do item>', 'Ver os detalhes de um item, como nome, preço, durabilidade, tipo e descrição'))
+
+#TODO
+#client.add_command(EditItem('Editar item', ';edititem', ';edititem <campo> <nome do item(Entre aspas)> <informação nova>', 'Altera a informação de um item.'))
 
 client.add_command(Shop('Shop', ';shop', ';shop <tipo de item(opcional)>', 'Mostra todos os itens criados e seus respectivos preços', client))
 

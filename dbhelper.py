@@ -95,6 +95,24 @@ class Comitter:
         connection.close()
         
         return content
+
+class ColumnEditor:
+    def __init__(self, db_path) -> None:
+        self.db_path = db_path
+        self.update_query = None
+    
+    def set_data_update_query(self, query):
+        self.update_query = query
+        
+    def commit(self, data):
+        connection = sqlite3.connect(self.db_path)
+        cursor = connection.cursor()
+        
+        cursor.execute(self.update_query, data)
+        connection.commit()
+        
+        cursor.close()
+        connection.close()
         
     
 if __name__ == '__main__':

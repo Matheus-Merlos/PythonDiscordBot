@@ -3,7 +3,6 @@ from discord import Message, Embed
 from dbhelper import Comitter
 import botutils
 import asyncio
-from discord.ext import commands
 from unidecode import unidecode
 
 class Shop(Command):
@@ -14,9 +13,11 @@ class Shop(Command):
     
     async def run(self, msg: Message):
         msg_as_list = msg.content.split()
+        #Se a mensagem tiver apenas a palavra ';shop', ele pega todos os itens
         if len(msg_as_list) == 1:
             items = get_items()
         else:
+            #Caso contrário, ele pega o ID, e caso o ID não exista, ele avisa
             if msg_as_list[1].isdigit():
                 try:
                     items = get_items(msg_as_list[1])
@@ -24,6 +25,7 @@ class Shop(Command):
                     await msg.reply(f'O id de tipo de item `{msg_as_list[1]}` não existe.')
                     return
             else:
+                #Caso contrário, caso ele tenha informado o nome, ele pesquisa na base da dados o id do tipo com base desse nome
                 word = unidecode(" ".join(msg_as_list[1:]).capitalize())
                 puller = Comitter(botutils.DB_PATH)
                 puller.set_data_pull_query("SELECT id FROM itemtypes WHERE description COLLATE NOCASE = ?")
@@ -56,16 +58,19 @@ class Shop(Command):
     
 
 def get_items(item_type=None):
+    #Puxa TODOS os itens
     if not item_type:
         puller = Comitter(botutils.DB_PATH)
         puller.set_data_pull_query("SELECT nome, price, description FROM item ORDER BY price ASC;")
         return puller.pull()
+    #Puxa todos os itens de um ID especifico
     else:
         puller = Comitter(botutils.DB_PATH)
         puller.set_data_pull_query("SELECT nome, price, description FROM item WHERE id_type = ? ORDER BY price ASC;")
         return puller.pull(item_type)
 
 async def show_embeds(embeds: list, msg: Message, client):
+    #Envia uma mensagem com uma embed, e adiciona duas reações
     message = await msg.reply(embed=embeds[0])
     await message.add_reaction('⬅️')
     await message.add_reaction('➡️')
