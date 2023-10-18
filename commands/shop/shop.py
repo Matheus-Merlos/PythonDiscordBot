@@ -13,19 +13,25 @@ class Shop(Command):
         self.client = client
     
     async def run(self, msg: Message):
-        #Pega todos os itens do banco de dados, em ordem ascendente de preço
         msg_as_list = msg.content.split()
-        print(len(msg_as_list))
         if len(msg_as_list) == 1:
             items = get_items()
         else:
             if msg_as_list[1].isdigit():
-                items = get_items(msg_as_list[1])
+                try:
+                    items = get_items(msg_as_list[1])
+                except:
+                    await msg.reply(f'O id de tipo de item `{msg_as_list[1]}` não existe.')
+                    return
             else:
                 word = unidecode(" ".join(msg_as_list[1:]).capitalize())
                 puller = Comitter(botutils.DB_PATH)
-                puller.set_data_pull_query("SELECT id FROM itemtypes WHERE description = ?")
-                items = get_items(puller.pull((word, )))
+                puller.set_data_pull_query("SELECT id FROM itemtypes WHERE description COLLATE NOCASE = ?")
+                try:
+                    items = get_items(puller.pull([word])[0])
+                except:
+                    await msg.reply(f'O id de tipo de item `{msg_as_list[1]}` não existe.')
+                    return
         
         #Divide a lista em várias mini listas de 10 items cada
         separated_lists = list()
@@ -84,4 +90,3 @@ async def show_embeds(embeds: list, msg: Message, client):
 
         except asyncio.TimeoutError:
             break
-    
