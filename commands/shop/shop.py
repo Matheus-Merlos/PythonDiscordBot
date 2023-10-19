@@ -61,12 +61,12 @@ def get_items(item_type=None):
     #Puxa TODOS os itens
     if not item_type:
         puller = Comitter(botutils.DB_PATH)
-        puller.set_data_pull_query("SELECT nome, price, description FROM item ORDER BY price ASC;")
+        puller.set_data_pull_query("SELECT name, price, description FROM item ORDER BY price ASC;")
         return puller.pull()
     #Puxa todos os itens de um ID especifico
     else:
         puller = Comitter(botutils.DB_PATH)
-        puller.set_data_pull_query("SELECT nome, price, description FROM item WHERE id_type = ? ORDER BY price ASC;")
+        puller.set_data_pull_query("SELECT name, price, description FROM item WHERE id_type = ? ORDER BY price ASC;")
         return puller.pull(item_type)
 
 async def show_embeds(embeds: list, msg: Message, client):

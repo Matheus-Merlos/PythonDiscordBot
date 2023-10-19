@@ -15,6 +15,7 @@ from commands.items.item import Item
 from commands.shop.shop import Shop
 from commands.items.edititem import EditItem
 from commands.player.ranks import *
+from commands.player.addplayer import AddPlayer
 
 PATH = Path(__file__).parent
 
@@ -57,12 +58,15 @@ client.add_command(AddItem('Adicionar Item', ';additem', ';additem <nome do item
 client.add_command(Item('Item', ';item', ';item <nome do item>', 'Ver os detalhes de um item, como nome, preço, durabilidade, tipo e descrição'))
 
 #TODO
-#client.add_command(EditItem('Editar item', ';edititem', ';edititem <campo> <nome do item(Entre aspas)> <informação nova>', 'Altera a informação de um item.'))
+#client.add_command(EditItem('Editar item', ';edititem', ';edititem <campo> <nome do item(Entre aspas)> <informação nova>', 'Alt
+# era a informação de um item.'))
 
 client.add_command(Shop('Shop', ';shop', ';shop <tipo de item(opcional)>', 'Mostra todos os itens criados e seus respectivos preços', client))
 
 client.add_command(AddRank('Adicionar Rank', ';addrank', ';addrank <nome> <XP necessário> <n° de Habilidades ganhas> <n° de Atributos Ganhos>', 'Cria um novo rank, podendo ser utilizado apenas por administradores'))
 client.add_command(Ranks('Ranks', ';ranks', ';ranks', 'Mostra todos os ranks adicionados no servidor'))
+
+client.add_command(AddPlayer('Adicionar Jogador', ';addplayer', ';addplayer <@Menção> <Nome do personagem> <XP (opcional)> <Gold (opcional>)', 'Adiciona um jogador para o server, comando restrito apenas para administradores'))
 
 
 client.run(os.getenv('TOKEN'))
