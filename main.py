@@ -16,6 +16,8 @@ from commands.shop.shop import Shop
 from commands.items.edititem import EditItem
 from commands.player.ranks import *
 from commands.player.addplayer import AddPlayer
+from commands.player.editstats import *
+
 
 PATH = Path(__file__).parent
 
@@ -67,6 +69,10 @@ client.add_command(AddRank('Adicionar Rank', ';addrank', ';addrank <nome> <XP ne
 client.add_command(Ranks('Ranks', ';ranks', ';ranks', 'Mostra todos os ranks adicionados no servidor'))
 
 client.add_command(AddPlayer('Adicionar Jogador', ';addplayer', ';addplayer <@Menção> <Nome do personagem> <XP (opcional)> <Gold (opcional>)', 'Adiciona um jogador para o server, comando restrito apenas para administradores'))
+client.add_command(AddExp('Adicionar XP', ';addexp', ';addexp <@menção do player> <quantidade>', 'Adiciona a quantidade de xp descrita do inventário do player'))
+client.add_command(RemoveExp('Remover XP', ';removeexp', ';removeexp <@menção do player> <quantidade>', 'Remove a quantidade de xp descrita do inventário do player'))
+client.add_command(AddGold('Adicionar Gold', ';addgold', ';addgold <@menção do player> <quantidade>', 'Adiciona a quantidade de gold descrita do inventário do player'))
+client.add_command(RemoveGold('Remover Gold', ';removegold', ';removegold <@menção do player> <quantidade>', 'Remove a quantidade de gold descrita do inventário do player'))
 
 
 client.run(os.getenv('TOKEN'))

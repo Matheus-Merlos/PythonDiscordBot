@@ -2,6 +2,7 @@ from commands.command import Command
 from discord import Message
 import botutils
 from dbhelper import *
+from commands.player.playerutils import player_exists
 
 class AddPlayer(Command):
     async def run(self, msg: Message):
@@ -70,11 +71,4 @@ def get_rank(xp):
         return '6'
     else:
         return '7'
-
-def player_exists(discord_id):
-    pull = Comitter(DB_PATH)
-    pull.set_data_pull_query('SELECT * FROM player WHERE discordid = ?')
-    plr = pull.pull((discord_id,))
-    
-    return True if plr else False
     
