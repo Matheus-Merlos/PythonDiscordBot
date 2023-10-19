@@ -11,7 +11,10 @@ def create_tables():
     cursor.execute("""
                 CREATE TABLE IF NOT EXISTS ranks (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    description TEXT
+                    description TEXT,
+                    required_exp INTEGER,
+                    new_slots INTEGER,
+                    new_atts INTEGER
                 );
                """)
 
