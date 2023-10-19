@@ -35,4 +35,4 @@ class ItemTypes(Command):
         for index, type in enumerate(itemtypes, start=1):
             embed.add_field(name=f'{index}-{type[0]}', value='', inline=False)
         
-        await msg.channel.send(embed=embed)
+        await msg.reply(embed=embed)

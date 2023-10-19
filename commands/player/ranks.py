@@ -1,5 +1,5 @@
 from commands.command import Command
-from discord import Message
+from discord import Message, Embed
 import botutils
 from dbhelper import *
 from unidecode import unidecode
@@ -28,3 +28,17 @@ class AddRank(Command):
         comm.commit(rank)
         
         await msg.reply('Rank adicionado com sucesso.')
+
+class Ranks(Command):
+    async def run(self, msg: Message):
+        puller = Comitter(botutils.DB_PATH)
+        puller.set_data_pull_query("SELECT id, description, required_exp, new_slots, new_atts FROM ranks;")
+        ranks = puller.pull()
+        
+        embed = Embed(title='Ranks')
+        for rank in ranks:
+            embed.add_field(name=f'{rank[0]}  -  {rank[1]}', value=f'XP Necessário: {rank[2]}\nHabilidades ganhas: {rank[3]}\nAtributos ganhos: {rank[4]}', inline=False)
+        
+        await msg.reply(embed=embed)
+            
+        

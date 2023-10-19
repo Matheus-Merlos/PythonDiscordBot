@@ -21,7 +21,6 @@ def create_tables():
     cursor.execute(f"""
                CREATE TABLE IF NOT EXISTS player (
                    discordid BIGINT PRIMARY KEY,
-                   name TEXT,
                    charname TEXT,
                    xp INTEGER,
                    rank_id INTEGER,
@@ -40,7 +39,7 @@ def create_tables():
     cursor.execute("""
                    CREATE TABLE IF NOT EXISTS item (
                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                       nome TEXT,
+                       name TEXT,
                        id_type INTEGER,
                        description TEXT,
                        price INTEGER,

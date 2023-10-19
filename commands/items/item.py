@@ -11,9 +11,9 @@ class Item(Command):
         item_name = unidecode(" ".join(msg_as_list).capitalize())
         
         puller = Comitter(botutils.DB_PATH)
-        puller.set_data_pull_query("""SELECT item.nome, item.price, itemtypes.description, item.durability, item.description 
+        puller.set_data_pull_query("""SELECT item.name, item.price, itemtypes.description, item.durability, item.description 
                                    FROM item 
-                                   INNER JOIN itemtypes ON item.id_type = itemtypes.id WHERE item.nome = ?""")
+                                   INNER JOIN itemtypes ON item.id_type = itemtypes.id WHERE item.name = ?""")
         item = puller.pull((item_name,))[0]
 
         embed = Embed(title=item[0])

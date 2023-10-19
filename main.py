@@ -14,7 +14,7 @@ from commands.items.additem import *
 from commands.items.item import Item
 from commands.shop.shop import Shop
 from commands.items.edititem import EditItem
-from commands.player.ranks import AddRank
+from commands.player.ranks import *
 
 PATH = Path(__file__).parent
 
@@ -62,6 +62,7 @@ client.add_command(Item('Item', ';item', ';item <nome do item>', 'Ver os detalhe
 client.add_command(Shop('Shop', ';shop', ';shop <tipo de item(opcional)>', 'Mostra todos os itens criados e seus respectivos preços', client))
 
 client.add_command(AddRank('Adicionar Rank', ';addrank', ';addrank <nome> <XP necessário> <n° de Habilidades ganhas> <n° de Atributos Ganhos>', 'Cria um novo rank, podendo ser utilizado apenas por administradores'))
+client.add_command(Ranks('Ranks', ';ranks', ';ranks', 'Mostra todos os ranks adicionados no servidor'))
 
 
 client.run(os.getenv('TOKEN'))

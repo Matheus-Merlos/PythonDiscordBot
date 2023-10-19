@@ -11,7 +11,7 @@ class AddItem(Command):
         #Pega o nome do item e checa se ele já existe na base de dados
         item_name = unidecode(self.get_item_name(msg_as_list)).capitalize().strip()
         puller_2 = Comitter(botutils.DB_PATH)
-        puller_2.set_data_pull_query("SELECT id FROM item WHERE nome = ?")
+        puller_2.set_data_pull_query("SELECT id FROM item WHERE name = ?")
         exists = puller_2.pull((item_name,))
         if exists:
             await msg.reply(f'O item "{item_name}" já existe.')
@@ -35,7 +35,7 @@ class AddItem(Command):
         item = (item_name, type_id, item_description, item_price, item_durability)
         #Insere os dados
         comm = Comitter(botutils.DB_PATH)
-        comm.set_data_insertion_query("INSERT INTO item (nome, id_type, description, price, durability) VALUES (?, ?, ?, ?, ?)")
+        comm.set_data_insertion_query("INSERT INTO item (name, id_type, description, price, durability) VALUES (?, ?, ?, ?, ?)")
         comm.commit(item)
         
         await msg.reply('Item criado com sucesso!')
