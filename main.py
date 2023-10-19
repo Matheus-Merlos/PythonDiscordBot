@@ -17,6 +17,7 @@ from commands.items.edititem import EditItem
 from commands.player.ranks import *
 from commands.player.addplayer import AddPlayer
 from commands.player.editstats import *
+from commands.player.stackeditstats import *
 
 
 PATH = Path(__file__).parent
@@ -44,6 +45,7 @@ class Client(discord.Client):
     
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 
 dotenv.load_dotenv(PATH / '.env')
 
@@ -74,5 +76,9 @@ client.add_command(RemoveExp('Remover XP', ';removeexp', ';removeexp <@menção 
 client.add_command(AddGold('Adicionar Gold', ';addgold', ';addgold <@menção do player> <quantidade>', 'Adiciona a quantidade de gold descrita do inventário do player'))
 client.add_command(RemoveGold('Remover Gold', ';removegold', ';removegold <@menção do player> <quantidade>', 'Remove a quantidade de gold descrita do inventário do player'))
 
+client.add_command(StackAddExp('Stack Adicionar XP', ';stackaddexp', ';stackaddexp <quantidade> <@menções>', 'Adiciona uma quantidade x de xp para todos os players que forem mencionados', client))
+client.add_command(StackRemoveExp('Stack Remover XP', ';stackremoveexp', ';stackremoveexp <quantidade> <@menções>', 'Remove uma quantidade x de xp para todos os players que forem mencionados', client))
+client.add_command(StackAddGold('Stack Adicionar Gold', ';stackaddgold', ';stackaddgold <quantidade> <@menções>', 'Adiciona uma quantidade x de gold para todos os players que forem mencionados', client))
+client.add_command(StackRemoveGold('Stack Remover Gold', ';stackremovegold', ';stackremovegold <quantidade> <@menções>', 'Remove uma quantidade x de gold para todos os players que forem mencionados', client))
 
 client.run(os.getenv('TOKEN'))
