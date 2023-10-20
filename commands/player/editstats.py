@@ -28,10 +28,22 @@ class EditStat(Command):
 
 class AddExp(EditStat):
     async def run(self, msg: Message):
+        msg_as_list = msg.content.split()
+        
+        player_id = botutils.get_id_from_mention(msg_as_list[1])
+        quantity = msg_as_list[2]
+
+        await check_update_and_alert_player(player_id, quantity, msg)
         await super().run(msg, 'xp', '+')
 
 class RemoveExp(EditStat):
     async def run(self, msg: Message):
+        msg_as_list = msg.content.split()
+        
+        player_id = botutils.get_id_from_mention(msg_as_list[1])
+        quantity = msg_as_list[2]
+
+        check_and_update_player(player_id, quantity)
         await super().run(msg, 'xp', '-')
 
 class AddGold(EditStat):

@@ -18,6 +18,7 @@ from commands.player.ranks import *
 from commands.player.addplayer import AddPlayer
 from commands.player.editstats import *
 from commands.player.stackeditstats import *
+from commands.inventory.inventory import Inventory
 
 
 PATH = Path(__file__).parent
@@ -32,7 +33,7 @@ class Client(discord.Client):
     
     async def on_message(self, message: Message):
         for prefix, command in self.commands.items():
-            if message.content.startswith(prefix):
+            if message.content.lower().startswith(prefix):
                 await command.run(message)
                 return
             
@@ -80,5 +81,7 @@ client.add_command(StackAddExp('Stack Adicionar XP', ';stackaddexp', ';stackadde
 client.add_command(StackRemoveExp('Stack Remover XP', ';stackremoveexp', ';stackremoveexp <quantidade> <@menções>', 'Remove uma quantidade x de xp para todos os players que forem mencionados', client))
 client.add_command(StackAddGold('Stack Adicionar Gold', ';stackaddgold', ';stackaddgold <quantidade> <@menções>', 'Adiciona uma quantidade x de gold para todos os players que forem mencionados', client))
 client.add_command(StackRemoveGold('Stack Remover Gold', ';stackremovegold', ';stackremovegold <quantidade> <@menções>', 'Remove uma quantidade x de gold para todos os players que forem mencionados', client))
+
+client.add_command(Inventory('Inventário', ';inv', ';inv <@player(opcional)>', 'Mostra o inventário seu, ou do player que você marcar', client))
 
 client.run(os.getenv('TOKEN'))

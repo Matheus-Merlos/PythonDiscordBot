@@ -2,7 +2,7 @@ from commands.command import Command
 from discord import Message
 import botutils
 from dbhelper import *
-from commands.player.playerutils import player_exists
+from commands.player.playerutils import player_exists, get_rank
 
 class AddPlayer(Command):
     async def run(self, msg: Message):
@@ -54,21 +54,4 @@ def get_xp_and_gold(msg_as_list):
         args = [0, 0]
     
     return tuple(args)
-
-def get_rank(xp):
-    xp = int(xp)
-    if xp < 550:
-        return '1'
-    elif xp >= 550 and xp < 1500:
-        return '2'
-    elif xp >= 1500 and xp < 5000:
-        return '3'
-    elif xp >= 5000 and xp < 10000:
-        return '4'
-    elif xp >= 10000 and xp < 15000:
-        return '5'
-    elif 'xp' >= 15000 and xp < 20000:
-        return '6'
-    else:
-        return '7'
     

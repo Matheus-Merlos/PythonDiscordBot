@@ -12,14 +12,23 @@ class StackEditStat(Command):
     async def run(self, msg: Message, column, operation):
         msg_as_list = msg.content.split()
         
+        #Checa se a quantidade é valida
         quantity = msg_as_list[1]
         if not quantity.isdigit():
             await msg.reply('Você não forneceu uma quantidade válida. Lembre-se que é primeiro a quantidade e depois os players.')
             return
         
+        #Pega todos os ids mencionados
         ids = [botutils.get_id_from_mention(id) for id in msg_as_list[2:]]
         
+        #Adiciona os itens para cada id
         for id in ids:
+            if column == 'xp':
+                if operation == '+':
+                    await check_update_and_alert_player(id, quantity, msg)
+                elif operation == '-':
+                    check_and_update_player(id, quantity)
+            
             update_player_stat(id, quantity, column, operation)
             
             if operation == '+':
