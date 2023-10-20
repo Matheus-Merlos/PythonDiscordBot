@@ -19,6 +19,7 @@ from commands.player.addplayer import AddPlayer
 from commands.player.editstats import *
 from commands.player.stackeditstats import *
 from commands.inventory.inventory import Inventory
+from commands.objectives.objectivetype import *
 
 
 PATH = Path(__file__).parent
@@ -38,7 +39,7 @@ class Client(discord.Client):
                 return
             
         if message.content.startswith(';'):
-            await message.channel.send('Desculpa, mas esse comando não existe!')
+            await message.reply('Desculpa, mas esse comando não existe!')
     
     def add_command(self, command: Command):
         self.commands[command.prefix] = command
@@ -83,5 +84,8 @@ client.add_command(StackAddGold('Stack Adicionar Gold', ';stackaddgold', ';stack
 client.add_command(StackRemoveGold('Stack Remover Gold', ';stackremovegold', ';stackremovegold <quantidade> <@menções>', 'Remove uma quantidade x de gold para todos os players que forem mencionados', client))
 
 client.add_command(Inventory('Inventário', ';inv', ';inv <@player(opcional)>', 'Mostra o inventário seu, ou do player que você marcar', client))
+
+client.add_command(AddObjectiveType('Adicionar tipo de objetivo', ';addobjectivetype', ';addobjectivetype <Nome do tipo>', 'Comando para adicionar tipos de objetivos, podendo ser utilizado apenas por administradores.'))
+client.add_command(ObjectiveType('Tipos de Objetivos', ';objectivetypes', ';objectivetypes', 'Mostra os tipos de objetivos que tem no servidor'))
 
 client.run(os.getenv('TOKEN'))

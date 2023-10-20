@@ -17,6 +17,11 @@ class EditStat(Command):
             return
         
         quantity = msg_as_list[2]
+        if column == 'xp':
+                if operation == '+':
+                    await check_update_and_alert_player(id, quantity, msg)
+                elif operation == '-':
+                    check_and_update_player(id, quantity)
         update_player_stat(player_id, quantity, column, operation)
         
         if operation == '+':
@@ -28,22 +33,10 @@ class EditStat(Command):
 
 class AddExp(EditStat):
     async def run(self, msg: Message):
-        msg_as_list = msg.content.split()
-        
-        player_id = botutils.get_id_from_mention(msg_as_list[1])
-        quantity = msg_as_list[2]
-
-        await check_update_and_alert_player(player_id, quantity, msg)
         await super().run(msg, 'xp', '+')
 
 class RemoveExp(EditStat):
     async def run(self, msg: Message):
-        msg_as_list = msg.content.split()
-        
-        player_id = botutils.get_id_from_mention(msg_as_list[1])
-        quantity = msg_as_list[2]
-
-        check_and_update_player(player_id, quantity)
         await super().run(msg, 'xp', '-')
 
 class AddGold(EditStat):

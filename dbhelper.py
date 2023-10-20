@@ -58,6 +58,13 @@ def create_tables():
                         PRIMARY KEY (item_id, player_id)
                     );
             """)
+    
+    cursor.execute("""
+                   CREATE TABLE IF NOT EXISTS objectivetypes (
+                       id INTEGER PRIMARY KEY AUTOINCREMENT,
+                       description TEXT
+                   );
+                   """)
     connection.commit()
     
     cursor.close()
