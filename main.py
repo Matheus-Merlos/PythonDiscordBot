@@ -20,7 +20,8 @@ from commands.player.editstats import *
 from commands.player.stackeditstats import *
 from commands.inventory.inventory import Inventory
 from commands.objectives.objectivetype import *
-
+from commands.objectives.addobjective import AddObjective
+from commands.objectives.objectives import Objectives
 
 PATH = Path(__file__).parent
 
@@ -87,5 +88,8 @@ client.add_command(Inventory('Inventário', ';inv', ';inv <@player(opcional)>', 
 
 client.add_command(AddObjectiveType('Adicionar tipo de objetivo', ';addobjectivetype', ';addobjectivetype <Nome do tipo>', 'Comando para adicionar tipos de objetivos, podendo ser utilizado apenas por administradores.'))
 client.add_command(ObjectiveType('Tipos de Objetivos', ';objectivetypes', ';objectivetypes', 'Mostra os tipos de objetivos que tem no servidor'))
+
+client.add_command(AddObjective('Adicionar Objetivo', ';addobjective', ';addobjective <nome do objetivo> <xp ganho> <tipo(id ou nome)> <gold> <descrição>', 'Adiciona um novo objetivo.'))
+client.add_command(Objectives('Objetivos', ';objectives', ';objectives <tipo(opcional)>', 'Mostra todos os objetivos cadastrados no servidor.', client))
 
 client.run(os.getenv('TOKEN'))
