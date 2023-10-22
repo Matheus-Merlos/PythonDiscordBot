@@ -24,6 +24,7 @@ from commands.objectives.addobjective import AddObjective
 from commands.objectives.objectives import Objectives
 from commands.objectives.completedobjective import CompletedObjective
 from commands.shop.buy import Buy
+from commands.items.use import Use
 
 PATH = Path(__file__).parent
 
@@ -97,5 +98,6 @@ client.add_command(Objectives('Objetivos', ';objectives', ';objectives', 'Mostra
 client.add_command(CompletedObjective('Completou Objetivo', ';completedobjective', ';completedobjective <@menção> <nome objetivo>', 'adiciona o xp e o gold do objetivo que a pessoa concluiu.'))
 
 client.add_command(Buy('Comprar', ';buy', ';buy <Nome do Item> <quantidade(opcional)>', 'Compra um item da loja e adiciona a seu inventário!'))
+client.add_command(Use('Usar Item', ';use', ';use <nome do item>', 'Usa o item específicado 1 vez'))
 
 client.run(os.getenv('TOKEN'))

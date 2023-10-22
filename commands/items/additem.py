@@ -123,7 +123,7 @@ def get_item_name(msg_as_list: list):
             break
         
     item_name = " ".join(item_name_list)
-    return item_name
+    return unidecode(item_name).capitalize().strip()
         
 
 class ItemTypeNotFoundError(Exception): ...
