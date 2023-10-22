@@ -31,7 +31,7 @@ def has_item_in_inventory(discord_id, item_id):
     
     return True if pull.pull((discord_id, item_id)) else False
 
-def can_buy(discord_id, item_id):
+def can_buy(discord_id, item_id, quantity=1):
     permitted_types = (2, 3, 8, 5, 4)
     item_type = get_item_type(item_id)
      

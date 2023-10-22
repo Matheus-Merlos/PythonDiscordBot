@@ -43,6 +43,4 @@ def get_item_name(msg_as_list, has_quantity=False):
         return " ".join(msg_as_list[1:])
     
     return " ".join(msg_as_list[1:len(msg_as_list)-1])
-
-
         

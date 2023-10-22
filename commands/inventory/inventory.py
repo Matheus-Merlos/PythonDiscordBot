@@ -22,6 +22,22 @@ class Inventory(Command):
         embed.add_field(name='XP Total', value=xp, inline=True)
         embed.add_field(name='Gold', value=f'R${gold},00', inline=True)
         
+        puller = Comitter(botutils.DB_PATH)
+        puller.set_data_pull_query("""
+                                SELECT item.name, COUNT(*) AS quantity 
+                                FROM inventarioitem
+                                INNER JOIN item ON inventarioitem.item_id = item.id
+                                WHERE inventarioitem.player_id = ?
+                                AND inventarioitem.current_durability > 0
+                                GROUP BY item.name
+                                ORDER BY item.name ASC;
+                                 """)
+        
+        items = puller.pull((player_id,))
+        if items:
+            for item in items:
+                embed.add_field(name=f'{item[1]} - {item[0]}', value='', inline=False)
+        
         await msg.reply(embed=embed)
 
 
