@@ -50,12 +50,12 @@ def create_tables():
     
     cursor.execute("""
                     CREATE TABLE IF NOT EXISTS inventarioitem (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                         item_id INTEGER,
                         player_id INTEGER,
                         current_durability INTEGER,
                         FOREIGN KEY (item_id) REFERENCES item(id),
-                        FOREIGN KEY (player_id) REFERENCES player(discordid),
-                        PRIMARY KEY (item_id, player_id)
+                        FOREIGN KEY (player_id) REFERENCES player(discordid)
                     );
             """)
     
