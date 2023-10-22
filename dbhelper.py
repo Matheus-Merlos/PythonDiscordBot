@@ -77,6 +77,18 @@ def create_tables():
                        FOREIGN KEY (type_id) REFERENCES objectivetypes(id)
                    );
                    """)
+    
+    cursor.execute("""
+                   CREATE TABLE IF NOT EXISTS objectives (
+                       id INTEGER PRIMARY KEY AUTOINCREMENT,
+                       name TEXT,
+                       type_id INTEGER,
+                       xp_gain INTEGER,
+                       gold_gain INTEGER,
+                       description TEXT,
+                       FOREIGN KEY (type_id) REFERENCES objectivetypes(id)
+                   );
+                   """)
     connection.commit()
     
     cursor.close()
