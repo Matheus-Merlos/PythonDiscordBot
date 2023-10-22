@@ -9,11 +9,8 @@ class AddItem(Command):
         msg_as_list = msg.content.split()
         
         #Pega o nome do item e checa se ele já existe na base de dados
-        item_name = unidecode(self.get_item_name(msg_as_list)).capitalize().strip()
-        puller_2 = Comitter(botutils.DB_PATH)
-        puller_2.set_data_pull_query("SELECT id FROM item WHERE name = ?")
-        exists = puller_2.pull((item_name,))
-        if exists:
+        item_name = unidecode(get_item_name(msg_as_list)).capitalize().strip()
+        if item_exists(item_name):
             await msg.reply(f'O item "{item_name}" já existe.')
             return
         
@@ -39,24 +36,6 @@ class AddItem(Command):
         comm.commit(item)
         
         await msg.reply('Item criado com sucesso!')
-        
-    
-    #Pega o nome do item, através de pegar todas as primeiras palavras, dando um break quando ele chega no preço
-    @staticmethod
-    def get_item_name(msg_as_list: list):
-        del msg_as_list[0]
-        item_name_list = list()
-        for word in msg_as_list:
-            if not word.isdigit():
-                #Remove as aspas do nome
-                word.replace("'", '') if "'" in word else word
-                word.replace('"', '') if '"' in word else word
-                item_name_list.append(word)
-            else:
-                break
-        
-        item_name = " ".join(item_name_list)
-        return item_name
     
     #Pega o preço do item, por ele ser o primeiro item numérico da lista, então fazemos um for simples
     #Retorna: Preço do item, Índice dele na lista
@@ -124,6 +103,28 @@ class AddItem(Command):
         
         return item_name, starting_index
 
+def item_exists(item_name):
+    puller_2 = Comitter(botutils.DB_PATH)
+    puller_2.set_data_pull_query("SELECT id FROM item WHERE name = ?")
+    exists = puller_2.pull((item_name,))
+    return True if exists else False
+
+#Pega o nome do item, através de pegar todas as primeiras palavras, dando um break quando ele chega no preço
+def get_item_name(msg_as_list: list):
+    del msg_as_list[0]
+    item_name_list = list()
+    for word in msg_as_list:
+        if not word.isdigit():
+            #Remove as aspas do nome
+            word.replace("'", '') if "'" in word else word
+            word.replace('"', '') if '"' in word else word
+            item_name_list.append(word)
+        else:
+            break
+        
+    item_name = " ".join(item_name_list)
+    return item_name
+        
 
 class ItemTypeNotFoundError(Exception): ...
 
