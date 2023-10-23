@@ -25,6 +25,7 @@ from commands.objectives.objectives import Objectives
 from commands.objectives.completedobjective import CompletedObjective
 from commands.shop.buy import Buy
 from commands.items.use import Use
+from commands.shop.give import Give
 
 PATH = Path(__file__).parent
 
@@ -58,7 +59,6 @@ dotenv.load_dotenv(PATH / '.env')
 client = Client(intents=intents)
 
 client.add_command(Turnos('Turnos', ';turnos', ';turnos <@ de quem vai participar>', 'Gera uma mensagem contendo os turnos do rpg.'))
-client.add_command(Help('Ajuda', ';help', ';help', 'Comando de ajuda do bot, mostra toda a documentação e como utilizar', client.commands.values()))
 client.add_command(Roll('Roll', ';roll', ';roll <dado(opcional)> <modificador(opcional)>', 'Rola um, ou vários dados para você, e mostra o resultado, sendo o principal comando do RPG'))
 
 client.add_command(AddItemType('Adicionar Tipo de Item', ';additemtype', ';additemtype <Nome>', 'Comando para adicionar novos tipos de item, requer permissão de "administrador"'))
@@ -99,5 +99,10 @@ client.add_command(CompletedObjective('Completou Objetivo', ';completedobjective
 
 client.add_command(Buy('Comprar', ';buy', ';buy <Nome do Item> <quantidade(opcional)>', 'Compra um item da loja e adiciona a seu inventário!'))
 client.add_command(Use('Usar Item', ';use', ';use <nome do item>', 'Usa o item específicado 1 vez'))
+client.add_command(Give('Dar item', ';give', ';give <@menção> <nome do item> <quantidade(opcional)>', 'Dá o item especificado ao player', client))
+
+
+
+client.add_command(Help('Ajuda', ';help', ';help', 'Comando de ajuda do bot, mostra toda a documentação e como utilizar', list(client.commands.values()), client))
 
 client.run(os.getenv('TOKEN'))
