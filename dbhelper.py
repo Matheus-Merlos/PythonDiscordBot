@@ -144,8 +144,6 @@ class ColumnEditor:
         
         cursor.close()
         connection.close()
-        
-    
 if __name__ == '__main__':
     create_tables()
     #add_player(475987459985734, 'teste', 'Koji')
