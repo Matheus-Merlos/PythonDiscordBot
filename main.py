@@ -26,6 +26,8 @@ from commands.objectives.completedobjective import CompletedObjective
 from commands.shop.buy import Buy
 from commands.items.use import Use
 from commands.shop.give import Give
+from commands.adm.resetplayer import ResetPlayer
+from commands.adm.novagen import NovaGen
 
 PATH = Path(__file__).parent
 
@@ -101,7 +103,8 @@ client.add_command(Buy('Comprar', ';buy', ';buy <Nome do Item> <quantidade(opcio
 client.add_command(Use('Usar Item', ';use', ';use <nome do item>', 'Usa o item específicado 1 vez'))
 client.add_command(Give('Dar item', ';give', ';give <@menção> <nome do item> <quantidade(opcional)>', 'Dá o item especificado ao player', client))
 
-
+client.add_command(ResetPlayer('Resetar Player', ';resetplayer', ';resetplayer <@menção>', 'Tira TUDO de um player, ele deixa-o só com 1000 de gold (comando apenas para administradores)'))
+client.add_command(NovaGen('Nova gen', ';novagen', ';novagen', '`NOW I AM BECOME DEATH, DESTROYER OF WORLDS`', client))
 
 client.add_command(Help('Ajuda', ';help', ';help', 'Comando de ajuda do bot, mostra toda a documentação e como utilizar', list(client.commands.values()), client))
 
