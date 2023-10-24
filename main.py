@@ -28,6 +28,7 @@ from commands.items.use import Use
 from commands.shop.give import Give
 from commands.adm.resetplayer import ResetPlayer
 from commands.adm.novagen import NovaGen
+from commands.adm.roles import Teste
 
 PATH = Path(__file__).parent
 

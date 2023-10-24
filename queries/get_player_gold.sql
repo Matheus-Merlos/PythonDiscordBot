@@ -1,0 +1,1 @@
+SELECT gold FROM player WHERE discordid = ?;

@@ -5,6 +5,9 @@ from dbhelper import Comitter
 import botutils
 from commands.player.playerutils import player_exists
 import asyncio
+from pathlib import Path
+
+QUERY_PATH = Path(__file__).parent.parent.parent / 'queries/novagen.sql'
 
 class NovaGen(Command):
     def __init__(self, name, prefix, syntax, description, client) -> None:
@@ -30,9 +33,8 @@ class NovaGen(Command):
                 reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=60.0)
 
                 if str(reaction.emoji) == '✅' and user == msg.author:
-                    reset_xp_and_gold()
-                    remove_items()
-                    delete_objectives()
+                    with Comitter(botutils.DB_PATH, QUERY_PATH) as comm:
+                        comm.commit(many=True)
                     
                     await msg.reply('INVENTÁRIO DE TODO MUNDO ZERADO!')
                     
@@ -42,20 +44,3 @@ class NovaGen(Command):
 
             except asyncio.TimeoutError:
                 break
-        
-        
-def reset_xp_and_gold():
-    comm = Comitter(botutils.DB_PATH)
-    comm.set_data_insertion_query("UPDATE player SET xp = 0, gold = 1000, rank_id = 1")
-    comm.commit(())
-    
-def remove_items():
-    comm = Comitter(botutils.DB_PATH)
-    comm.set_data_insertion_query("DELETE FROM inventarioitem;")
-    comm.commit(())
-
-def delete_objectives():
-    comm = Comitter(botutils.DB_PATH)
-    comm.set_data_insertion_query("DELETE FROM completed_objectives;")
-    comm.commit(())
-        

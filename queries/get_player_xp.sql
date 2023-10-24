@@ -1,0 +1,1 @@
+SELECT xp FROM player WHERE discordid = ?;

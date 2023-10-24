@@ -1,5 +1,6 @@
 import sqlite3
 from pathlib import Path
+import sqlparse
 
 ROOT_DIR = Path(__file__).parent
 DB_PATH = ROOT_DIR / 'database.sqlite3'
@@ -91,41 +92,6 @@ def create_tables():
     
     cursor.close()
     connection.close()
-    
-class Comitter:
-    def __init__(self, database_path):
-        self.database_path = database_path
-        self.query = None
-        self.pull_query = None
-    
-    def set_data_insertion_query(self, query):
-        self.query = query
-    
-    def set_data_pull_query(self, query):
-        self.pull_query = query
-    
-    def commit(self, data):
-        connection = sqlite3.connect(self.database_path)
-        cursor = connection.cursor()
-        
-        cursor.execute(self.query, data)
-        connection.commit()
-        
-        cursor.close()
-        connection.close()
-        
-    def pull(self, args=()):
-        connection = sqlite3.connect(self.database_path)
-        cursor = connection.cursor()
-        
-        cursor.execute(self.pull_query, args)
-        
-        content = cursor.fetchall()
-        
-        cursor.close()
-        connection.close()
-        
-        return content
 
 class ColumnEditor:
     def __init__(self, db_path) -> None:
@@ -145,6 +111,47 @@ class ColumnEditor:
         cursor.close()
         connection.close()
 if __name__ == '__main__':
-    create_tables()
+    ...
+    # create_tables()
     #add_player(475987459985734, 'teste', 'Koji')
     #create_rank()
+
+class DBManager:
+    def __init__(self, database_path, query_path) -> None:
+        self.database_path = database_path
+        self.query_path = query_path
+        self.connection = None
+        self.cursor = None
+        self.query = None
+    
+    def __enter__(self):
+        self.connection = sqlite3.connect(self.database_path)
+        self.cursor = self.connection.cursor()
+        
+        with open(self.query_path, 'r', encoding='utf-8') as sqlfile:
+            self.query = sqlfile.read()
+        
+        return self
+    
+    def __exit__(self, class_exception, exception_, traceback_):
+        self.connection.commit()
+        
+        self.cursor.close()
+        self.connection.close()
+        return
+
+class Comitter(DBManager):
+    def commit(self, many=False, data=''):
+        parsed = sqlparse.parse(self.query)
+        if len(parsed) > 1 and not many:
+            raise ValueError('You can only execute one statement at a time.')
+        for statement in parsed:
+            self.cursor.execute(str(statement), data)
+
+class Puller(DBManager):
+    def pull(self, data=()):
+        parsed = sqlparse.parse(self.query)
+        if len(parsed) > 1:
+            raise ValueError('You can only execute one statement at a time.')
+        self.cursor.execute(self.query, data)
+        return self.cursor.fetchall()
