@@ -1,0 +1,1 @@
+UPDATE player SET xp = 0, gold = 1000, rank_id = 1 WHERE discordid = ?

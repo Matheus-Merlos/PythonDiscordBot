@@ -1,0 +1,1 @@
+DELETE FROM completed_objectives WHERE discord_id = ?;

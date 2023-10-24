@@ -1,0 +1,1 @@
+DELETE FROM inventarioitem WHERE player_id = ?;

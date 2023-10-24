@@ -1,20 +1,19 @@
 from commands.command import Command
 from discord import Message
 from discord import Embed
-from dbhelper import Comitter
+from dbhelper import Puller
 from unidecode import unidecode
 import botutils
+
+QUERY_PATH = botutils.QUERIES_FOLDER_PATH / 'get_item.sql'
 
 class Item(Command):
     async def run(self, msg: Message):
         msg_as_list = msg.content.split()[1:]
-        item_name = unidecode(" ".join(msg_as_list).capitalize())
+        item_name = unidecode(" ".join(msg_as_list).capitalize().strip())
         
-        puller = Comitter(botutils.DB_PATH)
-        puller.set_data_pull_query("""SELECT item.name, item.price, itemtypes.description, item.durability, item.description 
-                                   FROM item 
-                                   INNER JOIN itemtypes ON item.id_type = itemtypes.id WHERE item.name = ?""")
-        item = puller.pull((item_name,))[0]
+        with Puller(botutils.DB_PATH, QUERY_PATH) as puller:
+            item = puller.pull((item_name,))[0]
 
         embed = Embed(title=item[0])
         embed.add_field(name='Preço', value=item[1], inline=True)
