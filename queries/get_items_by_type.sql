@@ -1,0 +1,1 @@
+SELECT name, price, description FROM item WHERE id_type = ? ORDER BY price ASC;

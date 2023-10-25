@@ -1,0 +1,1 @@
+INSERT INTO inventarioitem (player_id, item_id, current_durability) VALUES (?, ?, ?);

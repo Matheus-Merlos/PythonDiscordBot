@@ -1,1 +1,1 @@
-SELECT id FROM itemtypes WHERE description = ?;
+SELECT id FROM itemtypes WHERE description COLLATE NOCASE= ?;

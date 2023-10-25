@@ -155,3 +155,25 @@ class Puller(DBManager):
             raise ValueError('You can only execute one statement at a time.')
         self.cursor.execute(self.query, data)
         return self.cursor.fetchall()
+
+class StatUpdater:
+    def __init__(self, database_path):
+        self.database_path = database_path
+        self.query = None
+        self.pull_query = None
+    
+    def set_data_insertion_query(self, query):
+        self.query = query
+    
+    def set_data_pull_query(self, query):
+        self.pull_query = query
+    
+    def commit(self, data):
+        connection = sqlite3.connect(self.database_path)
+        cursor = connection.cursor()
+        
+        cursor.execute(self.query, data)
+        connection.commit()
+        
+        cursor.close()
+        connection.close()

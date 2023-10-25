@@ -19,9 +19,9 @@ class EditStat(Command):
         quantity = msg_as_list[2]
         if column == 'xp':
                 if operation == '+':
-                    await check_update_and_alert_player(id, quantity, msg)
+                    await check_update_and_alert_player(player_id, quantity, msg)
                 elif operation == '-':
-                    check_and_update_player(id, quantity)
+                    check_and_update_player(player_id, quantity)
         update_player_stat(player_id, quantity, column, operation)
         
         if operation == '+':

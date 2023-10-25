@@ -1,0 +1,1 @@
+SELECT ranks.id FROM ranks INNER JOIN player ON player.rank_id = ranks.id WHERE player.discordid = ?;

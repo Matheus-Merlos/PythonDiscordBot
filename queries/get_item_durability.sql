@@ -1,0 +1,1 @@
+SELECT durability FROM item WHERE id = ?;

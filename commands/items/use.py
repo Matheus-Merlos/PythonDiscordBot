@@ -5,7 +5,7 @@ from discord import Message
 from dbhelper import Comitter, Puller
 import botutils
 
-USE_ITEM_QUERY = botutils.QUERIES_FOLDER_PATH / 'create_item_type.sql'
+USE_ITEM_QUERY = botutils.QUERIES_FOLDER_PATH / 'use_item.sql'
 HAS_ITEM_QUERY = botutils.QUERIES_FOLDER_PATH / 'has_item.sql'
 
 class Use(Command):

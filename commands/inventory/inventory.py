@@ -2,7 +2,7 @@ from commands.command import Command
 from discord import Message, Embed
 import botutils
 from dbhelper import Puller
-import inventoryutils
+from commands.inventory import inventoryutils
 
 QUERY_PATH = botutils.QUERIES_FOLDER_PATH / 'inventory_pull.sql'
 XP_QUERY = botutils.QUERIES_FOLDER_PATH / 'get_player_xp.sql'

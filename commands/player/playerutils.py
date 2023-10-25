@@ -1,30 +1,30 @@
-from dbhelper import Comitter
+from dbhelper import StatUpdater, Puller, Comitter
 import botutils
 from discord import Message
+from commands.inventory.inventoryutils import get_player_xp
+
+PLAYER_EXISTS_QUERY = botutils.QUERIES_FOLDER_PATH / 'player_exists.sql'
+GET_PLAYER_RANK_QUERY = botutils.QUERIES_FOLDER_PATH / 'get_player_rank.sql'
+CHANGE_RANK_QUERY = botutils.QUERIES_FOLDER_PATH / 'change_rank.sql'
+GET_RANK_STATS = botutils.QUERIES_FOLDER_PATH / 'get_rank_stats.sql'
+
 
 def update_player_stat(player_id, quantity, column, operation='+'):
     operations = ['+', '-']
     if operation not in operations:
         raise ValueError('This operation does not exist!')
     
-    comm = Comitter(botutils.DB_PATH)
+    comm = StatUpdater(botutils.DB_PATH)
     query = f'UPDATE player SET {column} = {column} {operation} ? WHERE discordid = ?'
     comm.set_data_insertion_query(query)
     comm.commit((int(quantity), player_id))
 
 
 def player_exists(discord_id):
-    pull = Comitter(botutils.DB_PATH)
-    pull.set_data_pull_query('SELECT * FROM player WHERE discordid = ?')
-    plr = pull.pull((discord_id,))
+    with Puller(botutils.DB_PATH, PLAYER_EXISTS_QUERY) as puller:
+        plr = puller.pull((discord_id,))
     
     return True if plr else False
-
-def get_player_xp(discord_id):
-    pull = Comitter(botutils.DB_PATH)
-    pull.set_data_pull_query('SELECT xp FROM player WHERE discordid = ?')
-    xp = pull.pull((discord_id, ))
-    return xp[0][0]
 
 def get_rank(xp):
     xp = int(xp)
@@ -44,22 +44,18 @@ def get_rank(xp):
         return '7'
 
 def check_player_rank(discord_id):
-    pull = Comitter(botutils.DB_PATH)
-    pull.set_data_pull_query('SELECT ranks.id FROM ranks INNER JOIN player ON player.rank_id = ranks.id WHERE player.discordid = ?')
-    rank = pull.pull((discord_id, ))
+    with Puller(botutils.DB_PATH, GET_PLAYER_RANK_QUERY) as puller:
+        rank = puller.pull((discord_id,))
     return rank[0][0]
 
 def change_rank(discord_id, new_rank):
-    comm = Comitter(botutils.DB_PATH)
-    query = 'UPDATE player SET rank_id = ? WHERE discordid = ?'
-    comm.set_data_insertion_query(query)
-    comm.commit((new_rank, discord_id))
+    with Comitter(botutils.DB_PATH, CHANGE_RANK_QUERY) as comm:
+        comm.commit(data=(new_rank, discord_id))
 
 async def alert_player(discord_id, new_rank_id, msg: Message):
     mention = f'<@{discord_id}>'
-    pull = Comitter(botutils.DB_PATH)
-    pull.set_data_pull_query('SELECT description, new_slots, new_atts FROM ranks WHERE id = ?')
-    rank_name, new_slots, new_atts = pull.pull((new_rank_id, ))[0]
+    with Puller(botutils.DB_PATH, GET_RANK_STATS) as puller:
+        rank_name, new_slots, new_atts = puller.pull((new_rank_id, ))[0]
     
     await msg.channel.send(f'O player {mention} acabou de evoluir para **{rank_name.capitalize()}** e ganhou **{new_slots}** de habilidade e **{new_atts}** pontos de atributos, além de poder modificar uma habilidade antiga!')
 

@@ -1,0 +1,1 @@
+SELECT id_type FROM item WHERE id = ?;

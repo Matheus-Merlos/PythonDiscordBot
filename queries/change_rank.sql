@@ -1,0 +1,1 @@
+UPDATE player SET rank_id = ? WHERE discordid = ?;

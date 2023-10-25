@@ -1,9 +1,13 @@
 from commands.command import Command
 from discord import Message, Embed
-from dbhelper import Comitter
+from dbhelper import Puller
 import botutils
 import asyncio
 from unidecode import unidecode
+
+GET_ITEM_TYPE_ID = botutils.QUERIES_FOLDER_PATH / 'get_item_type.sql'
+GET_ITEMS = botutils.QUERIES_FOLDER_PATH / 'get_items.sql'
+GET_ITEMS_BY_TYPE = botutils.QUERIES_FOLDER_PATH / 'get_items_by_type.sql'
 
 class Shop(Command):
     #Adiciona o parâmetro client para poder checar depois as reações
@@ -27,11 +31,10 @@ class Shop(Command):
             else:
                 #Caso contrário, caso ele tenha informado o nome, ele pesquisa na base da dados o id do tipo com base desse nome
                 word = unidecode(" ".join(msg_as_list[1:]).capitalize())
-                puller = Comitter(botutils.DB_PATH)
-                puller.set_data_pull_query("SELECT id FROM itemtypes WHERE description COLLATE NOCASE = ?")
-                try:
-                    items = get_items(puller.pull([word])[0])
-                except:
+                
+                with Puller(botutils.DB_PATH, GET_ITEM_TYPE_ID) as puller:
+                    items = get_items(puller.pull((word,))[0])
+                if not items:
                     await msg.reply(f'O id de tipo de item `{msg_as_list[1]}` não existe.')
                     return
         
@@ -60,14 +63,12 @@ class Shop(Command):
 def get_items(item_type=None):
     #Puxa TODOS os itens
     if not item_type:
-        puller = Comitter(botutils.DB_PATH)
-        puller.set_data_pull_query("SELECT name, price, description FROM item ORDER BY price ASC;")
-        return puller.pull()
+        with Puller(botutils.DB_PATH, GET_ITEMS) as puller:
+            return puller.pull()
     #Puxa todos os itens de um ID especifico
     else:
-        puller = Comitter(botutils.DB_PATH)
-        puller.set_data_pull_query("SELECT name, price, description FROM item WHERE id_type = ? ORDER BY price ASC;")
-        return puller.pull(item_type)
+        with Puller(botutils.DB_PATH, GET_ITEMS_BY_TYPE) as plr:
+            return plr.pull(item_type)
 
 async def show_embeds(embeds: list, msg: Message, client):
     #Envia uma mensagem com uma embed, e adiciona duas reações

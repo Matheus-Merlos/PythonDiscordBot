@@ -1,0 +1,1 @@
+SELECT charname FROM player WHERE discordid = ?;

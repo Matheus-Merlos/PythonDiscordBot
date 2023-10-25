@@ -1,0 +1,1 @@
+SELECT description, new_slots, new_atts FROM ranks WHERE id = ?;
