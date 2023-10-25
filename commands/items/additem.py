@@ -4,6 +4,11 @@ from dbhelper import *
 import botutils
 from unidecode import unidecode
 
+GET_ITEM_TYPE_QUERY = botutils.QUERIES_FOLDER_PATH / 'get_item_type.sql'
+CREATE_ITEM_QUERY_PATH = botutils.QUERIES_FOLDER_PATH / 'create_item.sql'
+ITEM_EXISTS_QUERY = botutils.QUERIES_FOLDER_PATH / 'item_exists.sql'
+GET_ITEM_TYPE_ID_QUERY = botutils.QUERIES_FOLDER_PATH / 'get_item_type_from_id.sql'
+
 class AddItem(Command):
     async def run(self, msg: Message):
         msg_as_list = msg.content.split()
@@ -20,20 +25,18 @@ class AddItem(Command):
         except ItemTypeNotFoundError:
             await msg.reply(f'Não existe um tipo de item com esse nome/id.')
             return
-        
-        puller = Comitter(botutils.DB_PATH)
-        puller.set_data_pull_query("SELECT id FROM itemtypes WHERE description = ?")
-        type_id = puller.pull((item_type,))[0][0]
+    
+        with Puller(botutils.DB_PATH, GET_ITEM_TYPE_QUERY) as puller:
+            type_id = puller.pull((item_type,))[0][0]
         
         item_durability = self.get_item_durability(msg_as_list, index2)
         item_description = self.get_item_description(msg_as_list, index2 + 1)
         
         #Cria a tupla contendo os dados do item
         item = (item_name, type_id, item_description, item_price, item_durability)
-        #Insere os dados
-        comm = Comitter(botutils.DB_PATH)
-        comm.set_data_insertion_query("INSERT INTO item (name, id_type, description, price, durability) VALUES (?, ?, ?, ?, ?)")
-        comm.commit(item)
+        #Insere os dados        
+        with Comitter(botutils.DB_PATH, CREATE_ITEM_QUERY_PATH) as comm:
+            comm.commit(data=item)
         
         await msg.reply('Item criado com sucesso!')
     
@@ -72,9 +75,8 @@ class AddItem(Command):
     
     @staticmethod
     def retrieve_item_type_by_id(item_id: int):
-        puller = Comitter(botutils.DB_PATH)
-        puller.set_data_pull_query("SELECT description FROM itemtypes WHERE id = ?")
-        result = puller.pull((item_id,))
+        with Puller(botutils.DB_PATH, GET_ITEM_TYPE_ID_QUERY) as puller:
+            result = puller.pull((item_id,))
         if not result:
             raise ItemTypeNotFoundError(f'Item type with id = {item_id} does not exist')
         
@@ -93,9 +95,8 @@ class AddItem(Command):
                 break
         item_name = " ".join(item_type_list)
         item_name = item_name.capitalize()
-        puller = Comitter(botutils.DB_PATH)
-        puller.set_data_pull_query("SELECT id FROM itemtypes WHERE description COLLATE NOCASE = ? COLLATE UNICODE")
-        result = puller.pull((item_name,))
+        with Puller(botutils.DB_PATH, GET_ITEM_TYPE_QUERY) as puller:
+            result = puller.pull((item_name,))
         if not result:
             raise ItemTypeNotFoundError(f'Item type with name = {item_name} does not exist')
         
@@ -104,9 +105,8 @@ class AddItem(Command):
         return item_name, starting_index
 
 def item_exists(item_name):
-    puller_2 = Comitter(botutils.DB_PATH)
-    puller_2.set_data_pull_query("SELECT id FROM item WHERE name = ?")
-    exists = puller_2.pull((item_name,))
+    with Puller(botutils.DB_PATH, ITEM_EXISTS_QUERY) as puller:
+        exists = puller.pull((item_name,))
     return True if exists else False
 
 #Pega o nome do item, através de pegar todas as primeiras palavras, dando um break quando ele chega no preço

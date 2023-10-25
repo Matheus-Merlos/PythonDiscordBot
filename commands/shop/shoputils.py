@@ -1,23 +1,16 @@
 import botutils
-from dbhelper import Comitter
+from dbhelper import Comitter, Puller
 
-def get_player_gold(discord_id):
-    pull = Comitter(botutils.DB_PATH)
-    pull.set_data_pull_query('SELECT gold FROM player WHERE discordid = ?')
-    
-    return pull.pull((discord_id,))[0][0]
+GET_ITEM_PRICE_QUERY = botutils.QUERIES_FOLDER_PATH / 'get_item_price.sql'
+GET_ITEM_ID_BY_NAME_QUERY = botutils.QUERIES_FOLDER_PATH / 'get_item_id_by_name.sql'
 
 def get_item_price(item_name):
-    pull = Comitter(botutils.DB_PATH)
-    pull.set_data_pull_query('SELECT price FROM item WHERE name = ?')
-    
-    return pull.pull((item_name,))[0][0]
+    with Puller(botutils.DB_PATH, GET_ITEM_PRICE_QUERY) as puller:
+        return puller.pull((item_name,))[0][0]
 
 def get_item_id_by_name(item_name):
-    pull = Comitter(botutils.DB_PATH)
-    pull.set_data_pull_query('SELECT id FROM item WHERE name = ?')
-    
-    return pull.pull((item_name,))[0][0]
+    with Puller(botutils.DB_PATH, GET_ITEM_ID_BY_NAME_QUERY) as puller:
+        return puller.pull((item_name,))[0][0]
 
 def get_item_type(item_id):
     pull = Comitter(botutils.DB_PATH)

@@ -1,0 +1,1 @@
+INSERT INTO item (name, id_type, description, price, durability) VALUES (?, ?, ?, ?, ?);

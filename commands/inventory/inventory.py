@@ -2,6 +2,7 @@ from commands.command import Command
 from discord import Message, Embed
 import botutils
 from dbhelper import Puller
+import inventoryutils
 
 QUERY_PATH = botutils.QUERIES_FOLDER_PATH / 'inventory_pull.sql'
 XP_QUERY = botutils.QUERIES_FOLDER_PATH / 'get_player_xp.sql'
@@ -19,10 +20,8 @@ class Inventory(Command):
         else:
             player_id = botutils.get_id_from_mention(msg_as_list[1])
             
-        with Puller(botutils.DB_PATH, XP_QUERY) as puller:
-            xp = puller.pull((str(player_id),))[0][0]
-        with Puller(botutils.DB_PATH, GOLD_QUERY) as puller:
-            gold = puller.pull((str(player_id),))[0][0]
+        xp = inventoryutils.get_player_xp(player_id)
+        gold = inventoryutils.get_player_gold(player_id)
         
         embed = Embed(title=f'Inventário de {self.client.get_user(int(player_id)).display_name}')
         embed.add_field(name='XP Total', value=xp, inline=True)
@@ -35,3 +34,8 @@ class Inventory(Command):
                 embed.add_field(name=f'{item[1]} - {item[0]}', value='', inline=False)
         
         await msg.reply(embed=embed)
+
+def get_player_gold(player_id):
+    with Puller(botutils.DB_PATH, GOLD_QUERY) as puller:
+        gold = puller.pull((str(player_id),))[0][0]
+    return gold

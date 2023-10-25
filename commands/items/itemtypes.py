@@ -1,9 +1,12 @@
 from commands.command import Command
 from discord import Message
-from dbhelper import Comitter
+from dbhelper import Puller, Comitter
 import discord
 import botutils
 from unidecode import unidecode
+
+GET_ITEM_TYPE_QUERY = botutils.QUERIES_FOLDER_PATH / 'get_item_types.sql'
+CREATE_ITEM_TYPE_QUERY = botutils.QUERIES_FOLDER_PATH / 'create_item_type.sql'
 
 class AddItemType(Command):
     async def run(self, msg: Message):
@@ -14,23 +17,19 @@ class AddItemType(Command):
         msg_as_list = msg.content.split()
         del msg_as_list[0]
         
-        item_type_name = " ".join(msg_as_list)
+        item_type_name = unidecode(" ".join(msg_as_list))
         
         content = tuple([item_type_name])
         
-        comm = Comitter(botutils.DB_PATH)
-        comm.set_data_insertion_query("INSERT INTO itemtypes (description) VALUES (?);")
-        comm.commit(unidecode(content))
+        with Comitter(botutils.DB_PATH, CREATE_ITEM_TYPE_QUERY) as commiter:
+            commiter.commit(data=content)
         
         await msg.reply('Tipo de item adicionado com sucesso!')
 
 class ItemTypes(Command):
     async def run(self, msg: Message):
-        comm = Comitter(botutils.DB_PATH)
-        comm.set_data_pull_query("SELECT (description) FROM itemtypes;")
-        
-        itemtypes = comm.pull()
-        
+        with Puller(botutils.DB_PATH, GET_ITEM_TYPE_QUERY) as puller:
+            itemtypes = puller.pull()
         embed = discord.Embed(title='Tipos de Item')
         for index, type in enumerate(itemtypes, start=1):
             embed.add_field(name=f'{index}-{type[0]}', value='', inline=False)

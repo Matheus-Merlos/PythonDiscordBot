@@ -2,8 +2,11 @@ from commands.command import Command
 from commands.items.additem import get_item_name, item_exists
 from commands.shop.shoputils import get_item_id_by_name
 from discord import Message
-from dbhelper import Comitter
+from dbhelper import Comitter, Puller
 import botutils
+
+USE_ITEM_QUERY = botutils.QUERIES_FOLDER_PATH / 'create_item_type.sql'
+HAS_ITEM_QUERY = botutils.QUERIES_FOLDER_PATH / 'has_item.sql'
 
 class Use(Command):
     async def run(self, msg: Message):
@@ -22,20 +25,11 @@ class Use(Command):
             await msg.reply('Você não possui esse item em seu inventário.')
             return
         
-        comm = Comitter(botutils.DB_PATH)
-        comm.set_data_insertion_query("""
-                                        UPDATE inventarioitem
-                                        SET current_durability = current_durability - 1
-                                        WHERE item_id = ? AND player_id = ? AND current_durability > 0
-                                        LIMIT 1;
-                                      """)
-        
-        comm.commit((item_id, discord_id))
+        with Comitter(botutils.DB_PATH, USE_ITEM_QUERY) as comm:
+            comm.commit(data=(item_id, discord_id))
         
         await msg.reply(':thumbsup:')
         
 def has_item_in_inventory(discord_id, item_id):
-    pull = Comitter(botutils.DB_PATH)
-    pull.set_data_pull_query('SELECT id FROM inventarioitem WHERE player_id = ? AND item_id = ? AND current_durability > 0')
-    
-    return True if pull.pull((discord_id, item_id)) else False
+    with Puller(botutils.DB_PATH, HAS_ITEM_QUERY) as pull:
+        return True if pull.pull((discord_id, item_id)) else False

@@ -1,0 +1,1 @@
+SELECT description FROM itemtypes WHERE id = ?;

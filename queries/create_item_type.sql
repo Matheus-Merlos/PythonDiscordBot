@@ -1,0 +1,1 @@
+INSERT INTO itemtypes (description) VALUES (?);

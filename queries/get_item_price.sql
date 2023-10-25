@@ -1,0 +1,1 @@
+SELECT price FROM item WHERE name = ?;

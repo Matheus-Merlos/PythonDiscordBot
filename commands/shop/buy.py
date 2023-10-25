@@ -4,6 +4,7 @@ from commands.items.additem import item_exists
 from unidecode import unidecode
 from commands.shop import shoputils
 from commands.player import playerutils
+from commands.inventory import inventoryutils
 
 class Buy(Command):
     async def run(self, msg: Message):
@@ -20,7 +21,7 @@ class Buy(Command):
             await msg.reply(f'Não existe um item com o nome `{item_name}`')
             return
         
-        player_gold = int(shoputils.get_player_gold(discord_id))
+        player_gold = int(inventoryutils.get_player_gold(discord_id))
         total_price = int(shoputils.get_item_price(item_name)) * quantity
         
         if total_price > player_gold:
