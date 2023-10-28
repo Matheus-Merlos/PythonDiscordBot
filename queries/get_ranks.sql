@@ -1,0 +1,1 @@
+SELECT id, description, required_exp, new_slots, new_atts FROM ranks;

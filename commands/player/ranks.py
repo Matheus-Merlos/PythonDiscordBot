@@ -4,6 +4,8 @@ import botutils
 from dbhelper import *
 from unidecode import unidecode
 
+GET_RANKS = botutils.QUERIES_FOLDER_PATH / 'get_ranks.sql'
+
 class AddRank(Command):
     async def run(self, msg: Message):
         if not msg.author.guild_permissions.administrator:
@@ -31,9 +33,8 @@ class AddRank(Command):
 
 class Ranks(Command):
     async def run(self, msg: Message):
-        puller = Comitter(botutils.DB_PATH)
-        puller.set_data_pull_query("SELECT id, description, required_exp, new_slots, new_atts FROM ranks;")
-        ranks = puller.pull()
+        with Puller(botutils.DB_PATH, GET_RANKS) as plr:
+            ranks = plr.pull()
         
         embed = Embed(title='Ranks')
         for rank in ranks:

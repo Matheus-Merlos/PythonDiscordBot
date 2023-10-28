@@ -4,8 +4,8 @@ import botutils
 from dbhelper import *
 from unidecode import unidecode
 
-GET_OBJECTIVE_TYPES = botutils.DB_PATH / 'get_objective_types.sql'
-INSERT_OBJECTIVE_TYPE = botutils.DB_PATH / 'create_objetive_type.sql'
+GET_OBJECTIVE_TYPES = botutils.QUERIES_FOLDER_PATH / 'get_objective_types.sql'
+INSERT_OBJECTIVE_TYPE = botutils.QUERIES_FOLDER_PATH / 'create_objetive_type.sql'
 
 class AddObjectiveType(Command):
     async def run(self, msg: Message):
