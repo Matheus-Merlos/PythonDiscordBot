@@ -1,0 +1,1 @@
+INSERT INTO completed_objectives (discord_id, objective_id) VALUES (?, ?);

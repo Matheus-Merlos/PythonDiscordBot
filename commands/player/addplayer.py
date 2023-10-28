@@ -4,6 +4,8 @@ import botutils
 from dbhelper import *
 from commands.player.playerutils import player_exists, get_rank
 
+CREATE_PLAYER = botutils.QUERIES_FOLDER_PATH / 'create_player.sql'
+
 class AddPlayer(Command):
     async def run(self, msg: Message):
         if not msg.author.guild_permissions.administrator:
@@ -24,9 +26,8 @@ class AddPlayer(Command):
         
         player = (discord_id, char_name, xp, rank_id, gold)
         
-        comm = Comitter(DB_PATH)
-        comm.set_data_insertion_query('INSERT INTO player (discordid, charname, xp, rank_id, gold) VALUES (?, ?, ?, ?, ?)')
-        comm.commit(player)
+        with Comitter(botutils.DB_PATH, CREATE_PLAYER) as comm:
+            comm.commit(data=player)
         
         await msg.reply('Player adicionado com sucesso.')
         

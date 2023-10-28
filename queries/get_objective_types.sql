@@ -1,0 +1,1 @@
+SELECT id, description FROM objectivetypes;

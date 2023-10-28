@@ -1,0 +1,1 @@
+SELECT discord_id, objective_id FROM completed_objectives WHERE discord_id = ? AND objective_id = ?;

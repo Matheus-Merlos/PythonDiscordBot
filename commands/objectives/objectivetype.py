@@ -4,6 +4,9 @@ import botutils
 from dbhelper import *
 from unidecode import unidecode
 
+GET_OBJECTIVE_TYPES = botutils.DB_PATH / 'get_objective_types.sql'
+INSERT_OBJECTIVE_TYPE = botutils.DB_PATH / 'create_objetive_type.sql'
+
 class AddObjectiveType(Command):
     async def run(self, msg: Message):
         if not msg.author.guild_permissions.administrator:
@@ -18,17 +21,16 @@ class AddObjectiveType(Command):
             await msg.reply('Você não forneceu todas as informações necessárias!')
             return
         
+        with Comitter(botutils.DB_PATH, INSERT_OBJECTIVE_TYPE) as comm:
+            comm.commit(data=(objective_type, ))
         comm = Comitter(botutils.DB_PATH)
-        comm.set_data_insertion_query('INSERT INTO objectivetypes (description) VALUES (?)')
-        comm.commit((objective_type,))
         
         await msg.reply('Tipo de objetivo adicionado com sucesso.')
 
 class ObjectiveType(Command):
     async def run(self, msg: Message):
-        puller = Comitter(botutils.DB_PATH)
-        puller.set_data_pull_query("SELECT id, description FROM objectivetypes;")
-        types = puller.pull()
+        with Puller(botutils.DB_PATH, GET_OBJECTIVE_TYPES) as plr:
+            types = plr.pull()
         
         embed = Embed(title='Tipos de Objetivos')
         for type in types:

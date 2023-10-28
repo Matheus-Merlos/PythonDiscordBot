@@ -3,7 +3,12 @@ from discord import Message
 import botutils
 from commands.player.playerutils import *
 from commands.objectives.addobjective import objective_exists
-from dbhelper import Comitter
+from dbhelper import Comitter, Puller
+
+HAS_OBJECTIVE = botutils.QUERIES_FOLDER_PATH / 'has_completed_objective.sql'
+ADD_COMPLETED_OBJECTIVE = botutils.QUERIES_FOLDER_PATH / 'create_completed_objective.sql'
+GET_OBJECTIVE_FROM_NAME = botutils.QUERIES_FOLDER_PATH / 'get_objective_from_name.sql'
+GET_OBJECTIVE_XP_AND_GOLD = botutils.QUERIES_FOLDER_PATH / 'get_objective_xp_and_gold.sql'
 
 class CompletedObjective(Command):
     async def run(self, msg: Message):
@@ -38,29 +43,23 @@ class CompletedObjective(Command):
         await msg.reply('Recompensas do objetivo adicionadas ao player com sucesso.')
         
 def get_objective_xp_and_gold(objective_name):
-    pull = Comitter(botutils.DB_PATH)
-    pull.set_data_pull_query('SELECT xp_gain, gold_gain FROM objectives WHERE name = ?')
-    stats = pull.pull((objective_name, ))
+    with Puller(botutils.DB_PATH, GET_OBJECTIVE_XP_AND_GOLD) as plr:
+        stats = plr.pull((objective_name, ))
     
     xp, gold = stats[0]
     return xp, gold
 
 def get_objective_from_name(objective_name):
-    pull = Comitter(botutils.DB_PATH)
-    pull.set_data_pull_query('SELECT id FROM objectives WHERE name = ?')
-    return pull.pull((objective_name, ))[0][0]
+    with Puller(botutils.DB_PATH, GET_OBJECTIVE_FROM_NAME) as plr:
+        return plr.pull((objective_name, ))[0][0]
 
 def has_completed_objective(discord_id, objective_id):
-    pull = Comitter(botutils.DB_PATH)
-    pull.set_data_pull_query('SELECT discord_id, objective_id FROM completed_objectives WHERE discord_id = ? AND objective_id = ?')
-    
-    completed = pull.pull((discord_id, objective_id))
+    with Puller(botutils.DB_PATH, HAS_OBJECTIVE) as plr:
+        completed = plr.pull((discord_id, objective_id))
     
     return True if completed else False
 
 def add_objective(discord_id, objective_id):
-    comm = Comitter(botutils.DB_PATH)
-    comm.set_data_insertion_query('INSERT INTO completed_objectives (discord_id, objective_id) VALUES (?, ?)')
-    
-    comm.commit((discord_id, objective_id))
+    with Comitter(botutils.DB_PATH, ADD_COMPLETED_OBJECTIVE) as comm:
+        comm.commit(data=(discord_id, objective_id))
     

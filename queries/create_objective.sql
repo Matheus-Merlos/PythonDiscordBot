@@ -1,0 +1,1 @@
+INSERT INTO objectives (name, type_id, xp_gain, gold_gain, description) VALUES (?, ?, ?, ?, ?);

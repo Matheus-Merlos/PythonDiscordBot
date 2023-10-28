@@ -1,8 +1,12 @@
 from discord import Message
 from commands.command import Command
 import botutils
-from dbhelper import Comitter
+from dbhelper import Comitter, Puller
 from unidecode import unidecode
+
+CREATE_OBJECTIVE_QUERY = botutils.QUERIES_FOLDER_PATH / 'create_objective.sql'
+OBJECTIVE_EXISTS = botutils.QUERIES_FOLDER_PATH / 'objective_exists.sql'
+GET_TYPE = botutils.QUERIES_FOLDER_PATH / 'get_objective_type.sql'
 
 class AddObjective(Command):
     async def run(self, msg: Message):
@@ -27,9 +31,8 @@ class AddObjective(Command):
         
         objective = (name, type, xp_gain, gold_gain, description)
         
-        comm = Comitter(botutils.DB_PATH)
-        comm.set_data_insertion_query('INSERT INTO objectives (name, type_id, xp_gain, gold_gain, description) VALUES (?, ?, ?, ?, ?)')
-        comm.commit(objective)
+        with Comitter(botutils.DB_PATH, CREATE_OBJECTIVE_QUERY) as comm:
+            comm.commit(data=objective)
         
         await msg.reply('Objetivo adicionado com sucesso.')
         
@@ -66,9 +69,8 @@ def get_objective_type(msg_as_list: list, index):
         return get_objective_type_from_name(type)
 
 def get_objective_type_from_name(objective_type):
-    pull = Comitter(botutils.DB_PATH)
-    pull.set_data_pull_query('SELECT id FROM objectivetypes WHERE description = ?')
-    objective_type_id = pull.pull((objective_type, ))
+    with Puller(botutils.DB_PATH, GET_TYPE) as puller:
+        objective_type_id = puller.pull((objective_type, ))
     
     if not objective_type_id:
         raise ValueError('This objective does not exist!')
@@ -82,9 +84,8 @@ def get_objective_description(msg_as_list: list, index: int):
     return objective_description
 
 def objective_exists(objective_name):
-    pull = Comitter(botutils.DB_PATH)
-    pull.set_data_pull_query('SELECT id FROM objectives WHERE name = ?')
-    objective = pull.pull((objective_name, ))
+    with Puller(botutils.DB_PATH, OBJECTIVE_EXISTS) as pull:
+        objective = pull.pull((objective_name,))
     
     if objective:
         return True

@@ -1,0 +1,1 @@
+SELECT xp_gain, gold_gain FROM objectives WHERE name = ?;

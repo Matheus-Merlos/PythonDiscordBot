@@ -1,8 +1,10 @@
 from commands.command import Command
 from discord import Message, Embed
-from dbhelper import Comitter
+from dbhelper import Puller
 import botutils
 from commands.shop.shop import show_embeds
+
+GET_OBJECTIVES = botutils.QUERIES_FOLDER_PATH / 'get_objectives.sql'
 
 class Objectives(Command):
     def __init__(self, name, prefix, syntax, description, client) -> None:
@@ -10,15 +12,9 @@ class Objectives(Command):
         self.client = client
 
     async def run(self, msg: Message):
-        pull = Comitter(botutils.DB_PATH)
-        pull.set_data_pull_query("""
-                                 SELECT objectives.name, objectivetypes.description, objectives.xp_gain, objectives.gold_gain, objectives.description 
-                                 FROM objectives 
-                                 INNER JOIN objectivetypes ON objectives.type_id = objectivetypes.id
-                                 ORDER BY objectives.type_id, objectives.xp_gain ASC
-                                 """)
+        with Puller(botutils.DB_PATH, GET_OBJECTIVES) as plr:
+            objectives = plr.pull()
         
-        objectives = pull.pull()
         pequenos = [objective for objective in objectives if objective[1] == 'Pequeno']
         medios = [objective for objective in objectives if objective[1] == 'Medio']
         grandes = [objective for objective in objectives if objective[1] == 'Grande']
